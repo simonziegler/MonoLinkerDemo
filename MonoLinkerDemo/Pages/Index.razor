@@ -1,0 +1,79 @@
+﻿@page "/"
+
+@inject IMTToastService ToastService
+
+<div class="mdc-layout-grid">
+    <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell--span-4">
+            <MTCard AutoStyled="true">
+                <Primary>
+                    <h2 class="bmdc-card__title mdc-typography mdc-typography--headline6">
+                        Autocompletes
+                    </h2>
+
+                    <h3 class="bmdc-card__subtitle mdc-typography mdc-typography--subtitle2">
+                        Three varieties - one disallowing blank selection, one allowing, and the last ignoring whitespace in searches.
+                    </h3>
+
+                    <p><MTAutocomplete @bind-Value="@Autocomplete1" Label="Blanks disallowed" TextInputStyle="MTTextInputStyle.Filled" SelectItems="@Fruits" LeadingIcon="alarm" AllowBlankResult="false" /></p>
+                    <p><MTAutocomplete @bind-Value="@Autocomplete2" Label="Blanks allowed" TextInputStyle="MTTextInputStyle.Outlined" SelectItems="@Fruits" AllowBlankResult="true" TrailingIcon="fa-dragon" IconFoundry="MTIconHelper.FAFoundry(relativeSize: MTIconFARelativeSize.Large)" /></p>
+                    <p><MTAutocomplete @bind-Value="@Autocomplete3" Label="Whitespace ignored" TextInputStyle="MTTextInputStyle.Filled" SelectItems="@Fruits" AllowBlankResult="true" IgnoreWhitespace="true" /></p>
+                </Primary>
+            </MTCard>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    string[] Fruits = { "Avocado", "Banana", "Blackberry", "Blueberry", "Cantaloupe", "Cherry", "Clementine", "Dragonfruit", "Fig", "Grape", "Guava", "Honeydew", "Huckleberry", "Jujube", "Kiwi", "Kumquat", "Lime", "Nectarine", "Orange", "Papaya", "Passion Fruit", "Pineapple", "Plum", "Pomegranate", "Raspberry", "Satsuma", "Strawberry", "Tangerine", "Tomato", "Watermelon" };
+
+    private MTListElement<int>[] DebouncePeriods = new MTListElement<int>[]
+    {
+        new MTListElement<int> { SelectedValue = 300, Label = "300 ms" },
+        new MTListElement<int> { SelectedValue = 500, Label = "500 ms" },
+        new MTListElement<int> { SelectedValue = 1000, Label = "1,000 ms" }
+        };
+
+
+
+    private string _autocomplete1;
+    private string Autocomplete1
+    {
+        get => _autocomplete1;
+        set
+        {
+            _autocomplete1 = value;
+
+            ToastService.ShowToast(heading: "Autocomplete blanks disallowed", message: $"Value: '{_autocomplete1}'", level: MTToastLevel.Success, showIcon: false);
+        }
+    }
+
+
+
+    private string _autocomplete2;
+    private string Autocomplete2
+    {
+        get => _autocomplete2;
+        set
+        {
+            _autocomplete2 = value;
+
+            ToastService.ShowToast(heading: "Autocomplete blanks allowed", message: $"Value: '{_autocomplete2}'", level: MTToastLevel.Success, showIcon: false);
+        }
+    }
+
+
+
+    private string _autocomplete3;
+    private string Autocomplete3
+    {
+        get => _autocomplete3;
+        set
+        {
+            _autocomplete3 = value;
+
+            ToastService.ShowToast(heading: "Autocomplete whitespace ignored", message: $"Value: '{_autocomplete3}'", level: MTToastLevel.Success, showIcon: false);
+        }
+    }
+}
