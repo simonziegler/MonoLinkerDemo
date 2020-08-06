@@ -64,4 +64,3 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.GH_PAT }}
         BRANCH: gh-pages
         FOLDER: "_site/wwwroot"
-      if: github.repository == 'BlazorMdc/BlazorMdcWebsite'
