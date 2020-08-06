@@ -58,6 +58,12 @@ jobs:
     - name: Publish 🔧
       run: dotnet publish --no-build --configuration $buildConfiguration --output $output $project
 
+    - name: Base Href Rewrite 👉
+      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+      with:
+        html_path: '_site/wwwroot/index.html'
+        base_href: '/MonoLinkerDemo/'
+
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
