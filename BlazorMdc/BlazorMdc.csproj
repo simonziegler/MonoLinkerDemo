@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<RazorLangVersion>3.0</RazorLangVersion>
+		<Configurations>Debug_WebAssembly;Debug_Server;Release_WebAssembly;Release_Server</Configurations>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+		<PackageLicenseFile></PackageLicenseFile>
+		<Authors>Simon Ziegler of Dioptra and Mark Stega of Optimium Health</Authors>
+		<Company>Blazor MDC</Company>
+		<Description>A lightweight Material Theme component library for Blazor. Intended to adhere rigorously to Material Theme guidelines in https://material.io. API and other documentation can be found at https://docs.blazormdc.com.</Description>
+		<RepositoryUrl>https://github.com/BlazorMdc/BlazorMdc</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReleaseNotes>We have a breaking change to the names of the bundled CSS and JS - please see docs.blazormdc.com in the installation section.</PackageReleaseNotes>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Copyright>Dioptra and Optimium Health</Copyright>
+		<PackageProjectUrl>https://blazormdc.com</PackageProjectUrl>
+		<Product>Blazor MDC</Product>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WebAssembly|AnyCPU'">
+		<DefineConstants>BlazorWebAssembly;DEBUG;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Server|AnyCPU'">
+		<DefineConstants>BlazorServer;DEBUG;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_WebAssembly|AnyCPU'">
+		<DefineConstants>BlazorWebAssembly;RELEASE;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Server|AnyCPU'">
+		<DefineConstants>BlazorServer;RELEASE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Remove="package-lock.json" />
+		<Content Remove="package.json" />
+		<Content Remove="tsconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="package-lock.json" />
+		<None Include="package.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+		<None Include="tsconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InputsComponentsScss Include="Components\**\*.scss" />
+		<InputsStylesScss Include="Styles\*.scss" />
+		<InputsScriptsJs Include="Scripts\*.js" />
+	</ItemGroup>
+
+	<!--<Target Name="BuildScriptsAndStyles" BeforeTargets="PreBuildEvent" Inputs="@(InputsComponentsScss);@(InputsStylesScss);@(InputsScriptsJs)" Outputs="@(OutputsWwwroot)">-->
+	<Target Name="BuildScriptsAndStyles" BeforeTargets="PreBuildEvent">	
+		<RemoveDir Directories="wip" />
+		<RemoveDir Directories="wwwroot" />
+		<Exec Command="npm install" />
+		<DownloadFile SourceUrl="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" DestinationFolder="wip" DestinationFileName="material-components-icons.css">
+			<Output TaskParameter="DownloadedFile" ItemName="Content" />
+		</DownloadFile>
+		<Exec Command="npm run minify-matfont" />
+		<Exec Command="npm run build-bmdc" />
+		<Exec Command="npm run minify-bmdc" />
+		<Exec Command="npm run build-bundle" />
+		<Exec Command="npm run minify-bundle-css" />
+		<Exec Command="npm run build-bmdc-ts" />
+		<Copy SourceFiles="Scripts\blazormdc.ts" DestinationFiles="wwwroot\blazormdc.js" />
+		<Touch Files="wwwroot\blazormdc.js" />
+		<Exec Command="npm run minify-bmdc-js" />
+		<Exec Command="npm run minify-bundle-js" />
+		<RemoveDir Directories="wip" />
+	</Target>
+
+</Project>
